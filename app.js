@@ -20,7 +20,7 @@ var options = { format: 'Letter' };
 
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: "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",
 });
 const openai = new OpenAIApi(configuration);
 const qrcode = require("qrcode-terminal");
@@ -42,7 +42,14 @@ let _id="";
 
   app.get("/",async(req,res)=>{
   // console.log("hello");
-  res.render("rewards")
+const data=await signUp.find({});
+console.log(data);
+  res.render("polaroid",{data:data})
+
+  })
+  app.post("/update",async(req,res)=>{
+    const result=await analysis.findOneAndUpdate({id:req.body.id},{$push:{sessionNotes:req.body.notes},id:req.body.id}, {upsert: true});
+    console.log("done");
   })
     app.post("/login",async(req,res)=>{
         let email=req.body.email;
@@ -91,10 +98,10 @@ let _id="";
  
  
  })
- app.get("/home",async(req,res)=>{
-    // wkhtmltopdf('http://localhost:80/generate',{ output: 'out.pdf' })
-    wkhtmltopdf('http://apple.com/', { output: 'out.pdf' });
- })
+//  app.get("/home",async(req,res)=>{
+//     // wkhtmltopdf('http://localhost:80/generate',{ output: 'out.pdf' })
+//     wkhtmltopdf('http://apple.com/', { output: 'out.pdf' });
+//  })
  app.get("/generate",async(req,res)=>{
     const data=await signUp.findById(_id);
     console.log(data);
@@ -126,8 +133,8 @@ let _id="";
         console.log(string);
         
         wkhtmltopdf(string, {
-            output: 'demo.pdf',
-            pageSize: 'letter'
+            output:  `${data.fname} report.pdf`
+,            pageSize: 'letter'
         });
   
 });
@@ -179,8 +186,11 @@ client.on('message',async  message => {
     
       client.sendMessage(message.from,"Join this link to chat with professional "+"https://chanakya-liveagent.glitch.me")
     }
+    
  else if(data=="report"){
-    const media = MessageMedia.fromFilePath('./demo.pdf');
+  const user=await signUp.findById(_id);
+  let path=`./${user.fname} report.pdf`
+    const media = MessageMedia.fromFilePath(path);
 client.sendMessage(message.from,media);
  
   }else if(data=="Session notes"){

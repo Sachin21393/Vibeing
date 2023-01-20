@@ -17,7 +17,7 @@ const signUp =require( "../../models/SignUp");
     }
 }
 
- const updateSignup=async(id)=>{
+ const updateSignup=async(req,id)=>{
     try{
        
         const result=await signUp.findOneAndUpdate({_id:id},{...req},{new:true});
