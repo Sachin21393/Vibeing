@@ -45,21 +45,21 @@
     <div class="container">
         <div class="row">
           <div class="col" style="border-right: 2px solid rgb(0,169,165);">
-           <img src="image.png" alt="" style="width: 95%">
+           <img src="/image.png" alt="" style="width: 95%">
           </div>
           <div class="col">
             <div class="container form1" style="margin-left: 3%;">
                 <h1 class="text-center">Login</h1>
                 <hr>
-                <form>
+                <form action="/login" method="post">
                     <div class="mb-3">
                       <label for="exampleInputEmail1" class="form-label">Email address</label>
-                      <input type="email" placeholder="example@abc.com" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                      <input type="email" placeholder="example@abc.com" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
                       <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
                     </div>
                     <div class="mb-3">
                       <label for="exampleInputPassword1" class="form-label">Password</label>
-                      <input type="password" placeholder="Enter password" class="form-control" id="exampleInputPassword1">
+                      <input type="password" placeholder="Enter password" class="form-control" id="exampleInputPassword1" name="password">
                     </div>
                     <hr>
                     <button type="submit" class="btn btn-primary" style="text-align: center !;">Submit</button>

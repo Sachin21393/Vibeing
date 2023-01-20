@@ -3,6 +3,9 @@ const bodyParser = require("body-parser");
 const express=require("express");
 const mongoose =require("mongoose")
 const signUp=require("./models/SignUp")
+const doctor=require("./models/doctor")
+const {CustomResponse} = require("./ApiConstants");
+const APIConstants=require("./ApiConstants")
 const { MessageMedia  } = require('whatsapp-web.js');
 const { Buttons } = require('whatsapp-web.js/src/structures');
 
@@ -20,27 +23,53 @@ var options = { format: 'Letter' };
 
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: "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",
 });
 const openai = new OpenAIApi(configuration);
 const qrcode = require("qrcode-terminal");
 const { Client } =require( "whatsapp-web.js");
 const app=express();
 const primaryRoutes=require( "./routes/index.js");
+const { checkPrime } = require("crypto");
+// const doctor = require("./models/doctor");
 app.use(express.static('public'));
 app.use("/v3",primaryRoutes);
 app.set('view engine', 'ejs');
 
 // app.use('*/css',express.static('public/css'));
+let id1="";
 
 app.use(bodyParser.urlencoded({
     extended: true
 }));
   
 let _id="";
+async function check (data){
+  const see=await doctor.findOne({name:data});
+  if(see) return true;
+  else return false;
 
+}
 
-  app.get("/",async(req,res)=>{
+app.get("/",async(req,res)=>{
+  res.render("login")
+})
+app.get("/gmap",async(req,res)=>{
+  res.render("gmaps");
+})
+app.get("/rewards",async(req,res)=>{
+  res.render("rewards");
+})
+app.get("/resources",async(req,res)=>{
+  res.render("resources");
+})
+app.get("/podcast",async(req,res)=>{
+  res.render("podcast");
+})
+app.get("/music",async(req,res)=>{
+  res.render("music");
+})
+  app.get("/notes",async(req,res)=>{
   // console.log("hello");
 const data=await signUp.find({});
 console.log(data);
@@ -58,8 +87,9 @@ console.log(data);
     console.log(result);
     if(result.password==pass){
         _id=result._id
+        res.render("home");
     }
-    console.log(_id);
+    // console.log(_id);
     })
     let p=0,n=0,neg=0,len=0;
  app.get("/analyze",async(req,res)=>{
@@ -98,10 +128,17 @@ console.log(data);
  
  
  })
-//  app.get("/home",async(req,res)=>{
-//     // wkhtmltopdf('http://localhost:80/generate',{ output: 'out.pdf' })
-//     wkhtmltopdf('http://apple.com/', { output: 'out.pdf' });
-//  })
+ app.get("/home",async(req,res)=>{
+  res.render("home")
+ })
+ app.post("/createDoctor",async(req,res)=>{
+  let body=req.body;
+  const data=new doctor({...body});
+  const result=await data.save();
+  let msg=CustomResponse(null, APIConstants.Status.Success, APIConstants.StatusCode.Ok, result, null);
+  res.json(msg);
+
+ })
  app.get("/generate",async(req,res)=>{
     const data=await signUp.findById(_id);
     console.log(data);
@@ -174,17 +211,48 @@ client.on('message',async  message => {
   if(message.author=='917738872498@c.us'){
 
   const data=message.body
+  console.log(data.substr(6,2));
+
+
+  console.log(data)
   if (data === 'Hello') {
-    let button = new Buttons('My name is Chanakya 🤖.Thank you for reaching out for help. We understand that taking the first step towards addressing your mental health can be difficult, but know that you are not alone and we are here to support you. Please let us know how we can best assist you and we will do our best to provide the resources and help you need."', [{ body: 'I need help' }, { body: 'Consult' },{body:'Live Chat'}], 'Hi there 👋🏻', 'Take Care');
+    let button = new Buttons('My name is Zuma 🤖.Thank you for reaching out for help. We understand that taking the first step towards addressing your mental health can be difficult, but know that you are not alone and we are here to support you. Please let us know how we can best assist you and we will do our best to provide the resources and help you need."', [{ body: 'I need help' }, { body: 'Live Chat' },{body:'Book Appointment'}], 'Hi there 👋🏻', 'Take Care');
     client.sendMessage(message.from, button);
     }
     else if(data=="I need help"){
-      client.sendMessage(message.from,"Hello Sachin! I am Chanakya and am here for you. You can talk to me about your life or anything 😊");
+      client.sendMessage(message.from,"Hello Sachin! I am Zuma and am here for you. You can talk to me about your life or anything 😊");
     }else if(data=="Consult"){
       client.sendMessage(message.from,"We have created one counselling session for you. Here you can talk with Professional "+"https://vibeing-counselling.glitch.me");
     }else if(data=="Live Chat"){
     
       client.sendMessage(message.from,"Join this link to chat with professional "+"https://chanakya-liveagent.glitch.me")
+    }else if(data=="Book Appointment"){
+      const doctors=await doctor.find({});
+    
+      doctors.forEach(ele=>{
+        let content=`Name: ${ele.name}`
+        let button = new Buttons('Here are the list of Doctors', [{ body:content }], 'Hi there 👋🏻', 'Take Care');
+        client.sendMessage(message.from, button);
+      
+      })
+      
+
+
+
+    }else if(check(data.substr(6)) && data.substr(6,2)=="Dr"){
+      // console.log("hello");
+      const details=await doctor.findOne({name:data.substr(6)});
+      id1=details._id;
+      console.log(id1);
+      let content=`Name: ${details.name} exp:${details.exp} Phone: ${details.phone}`;
+      let button = new Buttons('Book your appointment', [{ body:'Yes' },{body:'No'}], 'Consultation', 'Take Care');
+      client.sendMessage(message.from, button);
+    }else if(data=="Yes"){
+      const update=await signUp.findOneAndUpdate({_id:_id},{$set:{doctorId:id1}});
+      client.sendMessage(message.from, "Your appointment is booked successfully join this link to consult with your doctor https://vibeing-counselling.glitch.me");
+    }else if(data=="Appointments"){
+      const details=await signUp.findOne({_id:_id}).populate('doctorId')
+      client.sendMessage(message.from, `Your appointment with Doctor ${details.doctorId.name}`)
     }
     
  else if(data=="report"){
