@@ -5,16 +5,19 @@ const mongoose =require("mongoose")
 const signUp=require("./models/SignUp")
 const { MessageMedia } = require('whatsapp-web.js');
 const analysis=require("./models/analysis")
+const ejs=require("ejs");
 const axios = require("axios");
 var fs = require('fs');
+const http=require("http")
 var pdf = require('html-pdf');
-var html = fs.readFileSync('./demo.html', 'utf8');
+var html = fs.readFileSync('./views/report.ejs', 'utf8');
+var wkhtmltopdf = require('wkhtmltopdf');
 var options = { format: 'Letter' };
 
 
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: "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",
 });
 const openai = new OpenAIApi(configuration);
 const qrcode = require("qrcode-terminal");
@@ -22,12 +25,19 @@ const { Client } =require( "whatsapp-web.js");
 const app=express();
 const primaryRoutes=require( "./routes/index.js");
 app.use("/v3",primaryRoutes);
+app.set('view engine', 'ejs');
+app.use(express.static("public"));
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
   
 let _id="";
-const start=async()=>{
+
+
+  app.get("/",async(req,res)=>{
+  console.log("hello");
+  })
     app.post("/login",async(req,res)=>{
         let email=req.body.email;
         let pass=req.body.password;
@@ -75,21 +85,37 @@ const start=async()=>{
  
  
  })
+ app.get("/home",async(req,res)=>{
+    // wkhtmltopdf('http://localhost:80/generate',{ output: 'out.pdf' })
+    wkhtmltopdf('http://apple.com/', { output: 'out.pdf' });
+ })
  app.get("/generate",async(req,res)=>{
+    const data=await signUp.findById(_id);
+    console.log(data);
+    let mood="";
     let a=(len/p)*100,b=(len/n)*100,c=(len/neg)*100;
     if(b>=c || a>=c){
-        console.log("positive");
+       mood="Hey your overall mood was positive"
 
     }else{
-        console.log("negative");
+        mood="Hey your overall mood was neutral"
     }
     console.log({a,b,c});
-    pdf.create(html, options).toFile('./businesscard.pdf', function(err, res) {
-        if (err) return console.log(err);
-        console.log(res); // { filename: '/app/businesscard.pdf' }
-      });
- })
-    app.listen("80",async(req,res)=>{
+    
+    res.render("report",{data:data,mood:mood},function(err,html){
+        // console.log(html);
+        let string =String(html)
+        console.log(string);
+        
+        wkhtmltopdf(string, {
+            output: 'demo.pdf',
+            pageSize: 'letter'
+        });
+  
+});
+});
+
+    app.listen(3000,async(req,res)=>{
         console.log("listening on 80");
     })
     mongoose.connect("mongodb://127.0.0.1:27017/rubixDB",{
@@ -102,9 +128,9 @@ const start=async()=>{
 });
 const client = new Client();
 
-client.on('qr', qr => {
-    qrcode.generate(qr, {small: true});
-});
+// client.on('qr', qr => {
+//     qrcode.generate(qr, {small: true});
+// });
 
 client.on('ready', () => {
     console.log('Client is ready!');
@@ -122,7 +148,7 @@ client.on('message',async  message => {
 
   const data=message.body
   if(data=="report"){
-    const media = MessageMedia.fromFilePath('./businesscard.pdf');
+    const media = MessageMedia.fromFilePath('./demo.pdf');
 client.sendMessage(message.from,media);
  
   }
@@ -149,6 +175,4 @@ const my=data
 });
 
 client.initialize();
-}
-start();
 

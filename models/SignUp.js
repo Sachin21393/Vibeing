@@ -5,6 +5,7 @@ const signUpSchema= new Schema({
     lname:String,
     email:{type:String , unique:true},
     password:String,
+    age:Number,
     Phone:Number
 })
 const signUp = mongoose.model("signUp", signUpSchema);

@@ -1,0 +1,21 @@
+lm = WordNetLemmatizer() #for getting words
+# lists
+ourClasses = []
+newWords = []
+documentX = []
+documentY = []
+# Each intent is tokenized into words and the patterns and their associated tags are added to their respective lists.
+for intent in data["intents"]:
+    for pattern in intent["patterns"]:
+        ournewTkns = nltk.word_tokenize(pattern)# tokenize the patterns
+        newWords.extend(ournewTkns)# extends the tokens
+        documentX.append(pattern)
+        documentY.append(intent["tag"])
+
+
+    if intent["tag"] not in ourClasses:# add unexisting tags to their respective classes
+        ourClasses.append(intent["tag"])
+
+newWords = [lm.lemmatize(word.lower()) for word in newWords if word not in string.punctuation] # set words to lowercase if not in punctuation
+newWords = sorted(set(newWords))# sorting words
+ourClasses = sorted(set(ourClasses))# sorting classes
