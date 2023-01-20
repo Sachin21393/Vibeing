@@ -25,15 +25,16 @@
    .grid-container {
   display: grid;
   gap: 50px 50px;
-  grid-template-columns: auto auto auto auto;
+  grid-template-columns: auto auto auto;
   padding: 10px;
 }
 .grid-item {
   background: rgb(252,239,239);
-  border: 1px solid rgba(0, 0, 0, 0.8);
+  /* border: 1px solid rgba(0, 0, 0, 0.8); */
   padding: 20px;
   font-size: 30px;
   text-align: center;
+  box-shadow: 0 0.2rem 1.2rem rgba(0,0,0,0.2);
 }
 .btn{
   background-color: rgb(0,169,165);
@@ -55,6 +56,9 @@
     font-weight: 400;
   }
  }
+ .nav-link{
+   color:white !important
+ }
 
  </style>
 
@@ -63,27 +67,28 @@
   <body>
     <nav class="navbar navbar-expand-lg" >
   <div class="container" >
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="home.html"><b style="color:white !important;font-size: 25px !important">Vibeing</b></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">About us</a>
+          <a class="nav-link active" aria-current="page" href=""></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Our programs</a>
+            <a class="nav-link active" aria-current="page" href="gmaps.html">Find Psychiatrist</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Volunteer</a>
+          <a class="nav-link active" aria-current="page" href="resources.html">Resources</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Resources</a>
+          <a class="nav-link active" aria-current="page" href="rewards.html">Rewards</a>
         </li>
       </ul>
       <form class="d-flex" role="search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        <img src="coins.png" alt="" width="30" height="30" style="margin-top:10%;margin-left:-5%;margin-right:5%;">
+        <p style="margin-top:15%;color: gold; font-size: 25;font-weight:200 !important">500 coins</p>
       </form>
     </div>
   </div>
@@ -94,7 +99,7 @@
    <div class="grid-container">
   <div class="grid-item">
       <img src="podcast.png" alt="" width="210" style="margin-top: 5%;" ><br>
-      <button type="button" class="btn "><a href="#" style="text-decoration: none;color: white;">Podcast</a></button>
+      <button type="button" class="btn "><a href="podcast.html" style="text-decoration: none;color: white;">Podcast</a></button>
     </div>
 
   <div class="grid-item">
@@ -103,15 +108,23 @@
   </div>
   <div class="grid-item">
     <img src="music.png" alt="" width="210" style="margin-top: 5%;" ><br>
-    <button type="button" class="btn "><a href="#" style="text-decoration: none;color: white">Others</a></button>
+    <button type="button" class="btn "><a href="music.html" style="text-decoration: none;color: white">Music</a></button>
   </div>
-  <div class="grid-item">
-    <img src="podcast.png" alt="" width="210" style="margin-top: 5%;" ><br>
-    <button type="button" class="btn "><a href="#" style="text-decoration: none;color: white">Others</a></button>
-  </div>
+
 
 </div>
 </div>
+<script type="text/javascript">
+    (function(d, m){
+        var kommunicateSettings =
+            {"appId":"2793b8f31c4cd92bd1c42967701db4fed","popupWidget":true,"automaticChatOpenOnNavigation":true};
+        var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
+        s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+        var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
+        window.kommunicate = m; m._globals = kommunicateSettings;
+    })(document, window.kommunicate || {});
+/* NOTE : Use web server to view HTML files as real-time update will not work if you directly open the HTML file in the browser. */
+</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   </body>
 </html>
