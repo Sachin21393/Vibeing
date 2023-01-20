@@ -198,7 +198,7 @@ client.on('message',async  message => {
 
   console.log(data)
   if (data === 'Hello') {
-    let button = new Buttons('My name is Zuma 🤖.Thank you for reaching out for help. We understand that taking the first step towards addressing your mental health can be difficult, but know that you are not alone and we are here to support you. Please let us know how we can best assist you and we will do our best to provide the resources and help you need."', [{ body: 'I need help' }, { body: 'Consult' },{body:'Book Appointment'}], 'Hi there 👋🏻', 'Take Care');
+    let button = new Buttons('My name is Zuma 🤖.Thank you for reaching out for help. We understand that taking the first step towards addressing your mental health can be difficult, but know that you are not alone and we are here to support you. Please let us know how we can best assist you and we will do our best to provide the resources and help you need."', [{ body: 'I need help' }, { body: 'Live Chat' },{body:'Book Appointment'}], 'Hi there 👋🏻', 'Take Care');
     client.sendMessage(message.from, button);
     }
     else if(data=="I need help"){
@@ -231,7 +231,7 @@ client.on('message',async  message => {
       client.sendMessage(message.from, button);
     }else if(data=="Yes"){
       const update=await signUp.findOneAndUpdate({_id:_id},{$set:{doctorId:id1}});
-      client.sendMessage(message.from, "Your appointment is booked successfully");
+      client.sendMessage(message.from, "Your appointment is booked successfully join this link to consult with your doctor https://vibeing-counselling.glitch.me");
     }else if(data=="Appointments"){
       const details=await signUp.findOne({_id:_id}).populate('doctorId')
       client.sendMessage(message.from, `Your appointment with Doctor ${details.doctorId.name}`)
