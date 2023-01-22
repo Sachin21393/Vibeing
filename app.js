@@ -23,7 +23,7 @@ var options = { format: 'Letter' };
 
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: "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",
 });
 const openai = new OpenAIApi(configuration);
 const qrcode = require("qrcode-terminal");
